@@ -1,0 +1,479 @@
+[
+  {
+    "name": "AcademicInformation",
+    "title": "Academic Information",
+    "getApi": "/api/academic/get",
+    "saveApi": "/api/academic/save",
+    "fields": [
+      {
+        "name": "academicYear",
+        "label": "Current Academic Year*",
+        "placeholder": "Select year",
+        "type": "select",
+        "options": ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year"],
+        "required": true
+      },
+      {
+        "name": "degreeLevel",
+        "label": "Current Degree Level*",
+        "placeholder": "Select degree",
+        "type": "select",
+        "options": ["B.Tech", "B.Sc", "B.A", "M.Tech", "M.Sc", "BCA", "MCA", "Others"],
+        "required": true
+      },
+      {
+        "name": "university",
+        "label": "University Name*",
+        "helper": "If your university isn't listed, select Others and enter the name manually.",
+        "placeholder": "Select university",
+        "type": "select",
+        "options": ["IIT Bombay", "IIT Delhi", "NIT Trichy", "BITS Pilani", "Jadavpur University", "Others"],
+        "customOption": true,
+        "customFieldName": "customUniversity",
+        "required": true
+      },
+      {
+        "name": "college",
+        "label": "College Name*",
+        "helper": "If your college isn't listed, select Others and enter the name manually.",
+        "placeholder": "Select college",
+        "type": "select",
+        "options": ["XYZ Institute of Technology", "ABC Engineering College", "PQR Degree College", "Others"],
+        "customOption": true,
+        "customFieldName": "customCollege",
+        "required": true
+      },
+      {
+        "name": "subjectAreas",
+        "label": "Currently Pursuing Subject Areas*",
+        "placeholder": "Select subject area",
+        "type": "multiselect",
+        "options": [
+          "Computer Science",
+          "Information Technology",
+          "Electronics",
+          "Mechanical Engineering",
+          "Civil Engineering",
+          "Data Science",
+          "Artificial Intelligence",
+          "Mathematics",
+          "Physics"
+        ],
+        "required": true
+      }
+    ],
+    "cancelText": "Cancel",
+    "saveText": "Save",
+    "editText": "Edit"
+  },
+  {
+    "name": "HometownInformation",
+    "title": "Hometown Information",
+    "getApi": "/api/hometown/get",
+    "saveApi": "/api/hometown/save",
+    "fields": [
+      {
+        "name": "hometownCountry",
+        "label": "Hometown Country*",
+        "placeholder": "Select country",
+        "type": "select",
+        "options": [
+          "India",
+          "United States",
+          "Canada",
+          "United Kingdom",
+          "Australia",
+          "Germany",
+          "France",
+          "China",
+          "Japan",
+          "Others"
+        ],
+        "customOption": true,
+        "customFieldName": "customCountry",
+        "required": true
+      },
+      {
+        "name": "hometownState",
+        "label": "Hometown State/Union Territory*",
+        "placeholder": "Select state",
+        "type": "select",
+        "dependsOn": "hometownCountry",
+        "options": {
+          "India": [
+            "Andhra Pradesh",
+            "Arunachal Pradesh",
+            "Assam",
+            "Bihar",
+            "Chhattisgarh",
+            "Goa",
+            "Gujarat",
+            "Haryana",
+            "Himachal Pradesh",
+            "Jharkhand",
+            "Karnataka",
+            "Kerala",
+            "Madhya Pradesh",
+            "Maharashtra",
+            "Manipur",
+            "Meghalaya",
+            "Mizoram",
+            "Nagaland",
+            "Odisha",
+            "Punjab",
+            "Rajasthan",
+            "Sikkim",
+            "Tamil Nadu",
+            "Telangana",
+            "Tripura",
+            "Uttar Pradesh",
+            "Uttarakhand",
+            "West Bengal",
+            "Andaman and Nicobar Islands",
+            "Chandigarh",
+            "Dadra and Nagar Haveli and Daman and Diu",
+            "Delhi",
+            "Lakshadweep",
+            "Puducherry",
+            "Others"
+          ]
+        },
+        "customOption": true,
+        "customFieldName": "customState",
+        "required": true
+      },
+      {
+        "name": "hometownDistrict",
+        "label": "Hometown District*",
+        "placeholder": "Select district",
+        "type": "select",
+        "dependsOn": "hometownState",
+        "options": {
+          "Jharkhand": [
+            "Bokaro",
+            "Chatra",
+            "Deoghar",
+            "Dhanbad",
+            "Dumka",
+            "East Singhbhum",
+            "Garhwa",
+            "Giridih",
+            "Godda",
+            "Gumla",
+            "Hazaribagh",
+            "Khunti",
+            "Koderma",
+            "Latehar",
+            "Lohardaga",
+            "Pakur",
+            "Palamu",
+            "Ramgarh",
+            "Ranchi",
+            "Sahibganj",
+            "Seraikela-Kharsawan",
+            "Simdega",
+            "West Singhbhum",
+            "Others"
+          ],
+          "Others": ["Others"]
+        },
+        "customOption": true,
+        "customFieldName": "customDistrict",
+        "required": true
+      },
+      {
+        "name": "hometownCityCategory",
+        "label": "Hometown City Category*",
+        "placeholder": "Select category",
+        "type": "select",
+        "options": ["Tier 1", "Tier 2", "Tier 3", "Town", "Village"],
+        "required": true
+      },
+      {
+        "name": "casteCategory",
+        "label": "Caste/Category*",
+        "placeholder": "Select category",
+        "type": "select",
+        "options": ["General", "OBC", "SC", "ST", "EWS"],
+        "required": true
+      },
+      {
+        "name": "annualHouseholdIncome",
+        "label": "Annual Household Income*",
+        "placeholder": "Select income range",
+        "type": "select",
+        "options": [
+          "Below or equal to 3 lakh per year (INR)",
+          "3 - 6 lakh per year (INR)",
+          "6 - 10 lakh per year (INR)",
+          "Above 10 lakh per year (INR)"
+        ],
+        "required": true
+      }
+    ],
+    "cancelText": "Cancel",
+    "saveText": "Save",
+    "editText": "Edit"
+  },
+  {
+    "name": "CollegeLocation",
+    "title": "College Location",
+    "getApi": "/api/college-location/get",
+    "saveApi": "/api/college-location/save",
+    "fields": [
+      {
+        "name": "collegeCountry",
+        "label": "College Country*",
+        "placeholder": "Select country",
+        "type": "select",
+        "options": [
+          "India",
+          "United States",
+          "Canada",
+          "United Kingdom",
+          "Australia",
+          "Germany",
+          "France",
+          "China",
+          "Japan",
+          "Others"
+        ],
+        "customOption": true,
+        "customFieldName": "customCountry",
+        "required": true
+      },
+      {
+        "name": "collegeState",
+        "label": "College State/Union Territory*",
+        "placeholder": "Select state",
+        "type": "select",
+        "dependsOn": "collegeCountry",
+        "options": {
+          "India": [
+            "Andhra Pradesh",
+            "Arunachal Pradesh",
+            "Assam",
+            "Bihar",
+            "Chhattisgarh",
+            "Goa",
+            "Gujarat",
+            "Haryana",
+            "Himachal Pradesh",
+            "Jharkhand",
+            "Karnataka",
+            "Kerala",
+            "Madhya Pradesh",
+            "Maharashtra",
+            "Manipur",
+            "Meghalaya",
+            "Mizoram",
+            "Nagaland",
+            "Odisha",
+            "Punjab",
+            "Rajasthan",
+            "Sikkim",
+            "Tamil Nadu",
+            "Telangana",
+            "Tripura",
+            "Uttar Pradesh",
+            "Uttarakhand",
+            "West Bengal",
+            "Andaman and Nicobar Islands",
+            "Chandigarh",
+            "Dadra and Nagar Haveli and Daman and Diu",
+            "Delhi",
+            "Lakshadweep",
+            "Puducherry",
+            "Others"
+          ]
+        },
+        "required": true
+      },
+      {
+        "name": "collegeDistrict",
+        "label": "College District*",
+        "placeholder": "Select district",
+        "type": "select",
+        "dependsOn": "collegeState",
+        "options": {
+          "Jharkhand": [
+            "Bokaro",
+            "Chatra",
+            "Deoghar",
+            "Dhanbad",
+            "Dumka",
+            "East Singhbhum",
+            "Garhwa",
+            "Giridih",
+            "Godda",
+            "Gumla",
+            "Hazaribagh",
+            "Khunti",
+            "Koderma",
+            "Latehar",
+            "Lohardaga",
+            "Pakur",
+            "Palamu",
+            "Ramgarh",
+            "Ranchi",
+            "Sahibganj",
+            "Seraikela-Kharsawan",
+            "Simdega",
+            "West Singhbhum",
+            "Others"
+          ]
+        },
+        "required": true
+      },
+      {
+        "name": "cityCategory",
+        "label": "College City Category*",
+        "placeholder": "Select category",
+        "type": "select",
+        "options": ["Tier 1", "Tier 2", "Town", "Rural/Village"],
+        "required": true
+      }
+    ],
+    "cancelText": "Cancel",
+    "saveText": "Save",
+    "editText": "Edit"
+  },
+  {
+    "name": "AdditionalInformation",
+    "title": "Additional Information",
+    "getApi": "/api/additional/get",
+    "saveApi": "/api/additional/save",
+    "fields": [
+      {
+        "name": "whatsappNumber",
+        "label": "WhatsApp Number*",
+        "placeholder": "+91 98765 43210",
+        "type": "tel",
+        "required": true
+      },
+      {
+        "name": "dateOfBirth",
+        "label": "Date of Birth*",
+        "type": "date",
+        "required": true
+      },
+      {
+        "name": "futureSubjectArea",
+        "label": "Which subject area do you want to pursue in future?*",
+        "placeholder": "Select subject area",
+        "type": "select",
+        "options": [
+          "Computer Science & Engineering",
+          "Data Science & Artificial Intelligence",
+          "Electronics & Communication",
+          "Mechanical Engineering",
+          "Civil Engineering",
+          "Electrical Engineering",
+          "Biotechnology",
+          "Business / Management",
+          "Medicine / Healthcare",
+          "Law",
+          "Design / Creative Arts",
+          "Agriculture",
+          "Others"
+        ],
+        "required": true
+      },
+      {
+        "name": "futureSubField",
+        "label": "Which sub-field do you want to pursue in it?*",
+        "placeholder": "Select sub-field",
+        "type": "select",
+        "dependsOn": "futureSubjectArea",
+        "options": {
+          "Computer Science & Engineering": [
+            "Software Development",
+            "Web Development",
+            "Mobile App Development",
+            "Cybersecurity",
+            "Cloud Computing",
+            "Blockchain",
+            "Game Development",
+            "Others"
+          ],
+          "Data Science & Artificial Intelligence": [
+            "Machine Learning",
+            "Deep Learning",
+            "Natural Language Processing",
+            "Computer Vision",
+            "Big Data Analytics",
+            "Data Engineering",
+            "Others"
+          ],
+          "Electronics & Communication": [
+            "VLSI Design",
+            "Embedded Systems",
+            "IoT",
+            "Robotics",
+            "Signal Processing",
+            "Others"
+          ],
+          "Mechanical Engineering": [
+            "Automobile Engineering",
+            "Thermal Engineering",
+            "Manufacturing",
+            "CAD/CAM",
+            "Robotics & Automation",
+            "Others"
+          ],
+          "Others": ["Others"]
+        },
+        "customOption": true,
+        "customFieldName": "customSubField",
+        "required": true
+      },
+      {
+        "name": "whyApply",
+        "label": "Why are you applying for this program?*",
+        "placeholder": "Tell us why you want to join this program...",
+        "type": "textarea",
+        "rows": 3,
+        "required": true
+      },
+      {
+        "name": "challenges",
+        "label": "What challenges do you face in your studies and career?*",
+        "placeholder": "What difficulties are you facing in studies or career...",
+        "type": "textarea",
+        "rows": 3,
+        "required": true
+      },
+      {
+        "name": "inspiringProfessorName",
+        "label": "Inspiring Professor Name",
+        "placeholder": "Name of the professor who inspired you",
+        "type": "text",
+        "required": false
+      },
+      {
+        "name": "professorContactNumber",
+        "label": "Professor's Contact Number",
+        "placeholder": "Professor's contact number",
+        "type": "tel",
+        "required": false
+      },
+      {
+        "name": "partnerOrganization",
+        "label": "Partner Organization*",
+        "helper": "If none, please select \"I'm applying on my own\"",
+        "placeholder": "Select partner organization",
+        "type": "select",
+        "options": [
+          "Dr. Reddy's Foundation",
+          "Tata Trusts",
+          "Infosys Foundation",
+          "I'm applying on my own"
+        ],
+        "required": true
+      }
+    ],
+    "cancelText": "Cancel",
+    "saveText": "Save",
+    "editText": "Edit"
+  }
+]
