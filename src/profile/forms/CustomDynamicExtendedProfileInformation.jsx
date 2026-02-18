@@ -11,51 +11,39 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import './customDynamicExtendedProfileInformation.scss';
-import sampleConfig from './sampledata.json';
+import { getConfig } from '@edx/frontend-platform';
+import { getAuthenticatedHttpClient } from '@edx/frontend-platform/auth';
 
-// Sample config from API (expanded with new types, dependencies, validations)
-// const sampleConfig = [
-//   {
-//     name: 'AcademicInformation',
-//     title: 'Academic Information',
-//     getApi: '/api/academic/get',
-//     saveApi: '/api/academic/save',
-//     fields: [
-//       { name: 'academicYear', label: 'Current Academic Year*', placeholder: 'Select year', type: 'select', options: ['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year'], required: true },
-//       { name: 'degreeLevel', label: 'Current Degree Level*', placeholder: 'Select degree', type: 'select', options: ['B.Tech', 'B.Sc', 'B.A', 'M.Tech', 'M.Sc', 'BCA', 'MCA', 'Others'], required: true },
-//       { name: 'university', label: 'University Name*', helper: 'If your university isn\'t listed, select Others and enter the name manually.', placeholder: 'Select university', type: 'select', options: ['IIT Bombay', 'IIT Delhi', 'NIT Trichy', 'BITS Pilani', 'Jadavpur University', 'Others'], customOption: true, customFieldName: 'customUniversity', required: true },
-//       { name: 'college', label: 'College Name*', helper: 'If your college isn\'t listed, select Others and enter the name manually.', placeholder: 'Select college', type: 'select', options: ['XYZ Institute of Technology', 'ABC Engineering College', 'PQR Degree College', 'Others'], customOption: true, customFieldName: 'customCollege', required: true },
-//       { name: 'subjectAreas', label: 'Currently Pursuing Subject Areas*', placeholder: 'Select subject area', type: 'multiselect', options: ['Computer Science', 'Information Technology', 'Electronics', 'Mechanical Engineering', 'Civil Engineering', 'Data Science', 'Artificial Intelligence', 'Mathematics', 'Physics'], required: true },
-//       { name: 'gender', label: 'Gender*', type: 'radio', options: ['Male', 'Female', 'Other'], required: true },
-//       { name: 'interests', label: 'Interests', type: 'checkbox', options: ['Sports', 'Music', 'Reading', 'Travel'], required: false },
-//       { name: 'resume', label: 'Upload Resume (PDF/DOCX)*', type: 'file', accept: '.pdf,.docx', required: true },
-//       { name: 'email', label: 'Email*', type: 'text', validation: { type: 'email' }, required: true },
-//       { name: 'age', label: 'Age*', type: 'number', validation: { min: 18, max: 100 }, required: true },
-//       { name: 'country', label: 'Country*', type: 'select', options: ['India', 'USA'], required: true },
-//       { name: 'state', label: 'State*', type: 'select', dependsOn: 'country', options: { India: ['Jharkhand', 'Delhi'], USA: ['California', 'New York'] }, required: true },
-//       { name: 'district', label: 'District*', type: 'select', dependsOn: 'state', options: { Jharkhand: ['Ranchi', 'Bokaro'], Delhi: ['Central Delhi'] }, required: true },
-//       { name: 'village', label: 'Village*', type: 'select', dependsOn: 'district', options: { Ranchi: ['Village1', 'Village2'] }, required: true, visibleWhen: { field: 'country', value: 'India' }, requiredWhen: { field: 'state', value: 'Jharkhand' } },
-//     ],
-//     cancelText: 'Cancel',
-//     saveText: 'Save',
-//     editText: 'Edit',
-//   },
-//   // Add other sections similarly...
-// ];
+import './customDynamicExtendedProfileInformation.scss';
+import { emitProfileEvent, PROFILE_EVENTS } from '../../utils/profileEvents';
+import messages from './CustomDynamicExtendedProfileInformation.messages';
+import { useIntl } from '@edx/frontend-platform/i18n';
 
 const CustomExtendedProfileInformation = () => {
+  const { formatMessage } = useIntl();
   const [sections, setSections] = useState([]);
 
   useEffect(() => {
-    // Real: fetch('/api/config').then(res => res.json()).then(setSections)
-    setSections(sampleConfig);
+    const { LMS_BASE_URL } = getConfig();
+
+    const fetchSections = async () => {
+      try {
+        const client = getAuthenticatedHttpClient();
+        const { data } = await client.get(`${LMS_BASE_URL}/profile/dynamic-form/`);
+        setSections(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error('Failed to load dynamic form:', err);
+        setSections([]);
+      }
+    };
+
+    fetchSections();
   }, []);
 
   return (
     <div className="container-fluid mt-4 mb-4 p-4 extended-profile-information">
-      <h3 className="extended-prfile-info-container-title">Extended Profile Information</h3>
-      <p>Please complete the following sections to help us personalize your learning experience.</p>
+      <h3 className="extended-prfile-info-container-title">{formatMessage(messages['Extended.Profile.Information.title'])}</h3>
+      <p>{formatMessage(messages['Extended.Profile.Information.description'])}</p>
       <div className="row">
         {sections.map((section, idx) => (
           <div key={idx} className="col-md-6 mb-4">
@@ -77,12 +65,25 @@ const GenericSection = ({ config }) => {
   const [errors, setErrors] = useState({});
 
   const hasSavedData = !!savedData;
-  const fields = config.fields;
+  const fields = Array.isArray(config.fields) ? config.fields : [];
 
   useEffect(() => {
-    // Real: fetch(config.getApi).then(res => res.json()).then(setSavedData)
-    setSavedData(null); // demo
-  }, [config.getApi]);
+    const { LMS_BASE_URL } = getConfig();
+    if (!LMS_BASE_URL || !config?.getApi) return;
+
+    const loadSavedData = async () => {
+      try {
+        const client = getAuthenticatedHttpClient();
+        const { data } = await client.get(`${LMS_BASE_URL}${config.getApi}`);
+        setSavedData(Object.keys(data || {}).length ? data : null);
+      } catch (err) {
+        console.error(`Failed to load ${config.getApi}:`, err);
+        setSavedData(null);
+      }
+    };
+
+    loadSavedData();
+  }, [config?.getApi, isSaving]);
 
   useEffect(() => {
     if (hasSavedData) {
@@ -94,7 +95,7 @@ const GenericSection = ({ config }) => {
 
   const initFormData = (fields) => {
     const data = {};
-    fields.forEach(f => {
+    fields.forEach((f) => {
       if (f.type === 'multiselect' || f.type === 'checkbox') data[f.name] = [];
       else if (f.type === 'file') data[f.name] = null;
       else data[f.name] = '';
@@ -105,7 +106,7 @@ const GenericSection = ({ config }) => {
 
   const savedToForm = (saved, fields) => {
     const data = initFormData(fields);
-    fields.forEach(f => {
+    fields.forEach((f) => {
       let val = saved?.[f.name];
       if (f.customOption) {
         const opts = getOptions(f, data[f.dependsOn || '']);
@@ -118,7 +119,7 @@ const GenericSection = ({ config }) => {
       } else if (f.type === 'multiselect' || f.type === 'checkbox') {
         data[f.name] = Array.isArray(val) ? val : [];
       } else if (f.type === 'file') {
-        data[f.name] = null; // Files not persisted in demo
+        data[f.name] = null;
       } else {
         data[f.name] = val || '';
       }
@@ -133,27 +134,26 @@ const GenericSection = ({ config }) => {
   };
 
   const resetDependents = (fieldName, newData) => {
-    const dependents = fields.filter(f => f.dependsOn === fieldName);
-    dependents.forEach(d => {
+    const dependents = fields.filter((f) => f.dependsOn === fieldName);
+    dependents.forEach((d) => {
       newData[d.name] = d.type === 'multiselect' || d.type === 'checkbox' ? [] : (d.type === 'file' ? null : '');
       if (d.customOption) newData[d.customFieldName] = '';
-      // Recurse for multi-level
       resetDependents(d.name, newData);
     });
   };
 
-  const toggleAccordion = () => setIsOpen(p => !p);
+  const toggleAccordion = () => setIsOpen((p) => !p);
 
   const handleChange = (e, name, field) => {
     let value;
     if (field.type === 'file') {
-      value = e.target.files[0];
+      value = e.target.files[0] || null;
     } else if (field.type === 'checkbox') {
       value = formData[name] || [];
       if (e.target.checked) {
         value = [...value, e.target.value];
       } else {
-        value = value.filter(v => v !== e.target.value);
+        value = value.filter((v) => v !== e.target.value);
       }
     } else if (field.type === 'radio') {
       value = e.target.value;
@@ -161,16 +161,16 @@ const GenericSection = ({ config }) => {
       value = e.target.value;
     }
 
-    setFormData(prev => {
+    setFormData((prev) => {
       const newData = { ...prev, [name]: value };
       resetDependents(name, newData);
       return newData;
     });
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleMultiSelect = (fieldName, opt) => {
-    setFormData(prev => {
+    setFormData((prev) => {
       const arr = prev[fieldName] || [];
       return { ...prev, [fieldName]: arr.includes(opt) ? arr.filter(v => v !== opt) : [...arr, opt] };
     });
@@ -182,64 +182,85 @@ const GenericSection = ({ config }) => {
 
   const toggleMultiDropdown = (fieldName) => setMultiOpen(p => ({ ...p, [fieldName]: !p[fieldName] }));
 
-  const preparePayload = () => {
-    const payload = {};
-    fields.forEach(f => {
-      if (f.customOption && formData[f.name] === 'Others') {
-        payload[f.name] = formData[f.customFieldName] || '';
-      } else if (f.type === 'file') {
-        payload[f.name] = formData[f.name]?.name || ''; // Simulate, real: FormData upload
-      } else {
-        payload[f.name] = formData[f.name];
-      }
-    });
-    return payload;
-  };
+  const prepareFormData = () => {
+  const payload = {};
+
+  fields.forEach((f) => {
+    const value = formData[f.name];
+
+    if (f.customOption && value === 'Others') {
+      payload[f.name] = formData[f.customFieldName] || '';
+    } else {
+      // arrays stay arrays, null/undefined → '', scalars stay as-is
+      payload[f.name] = value ?? '';
+    }
+  });
+
+  return payload;
+};
 
   const validateField = (field, value) => {
-    if (field.visibleWhen && !evaluateCondition(field.visibleWhen)) return ''; // Not visible → no error
+    if (field.visibleWhen && !evaluateCondition(field.visibleWhen)) return '';
+
     const isRequired = field.required || (field.requiredWhen && evaluateCondition(field.requiredWhen));
-    if (isRequired && (!value || (Array.isArray(value) && !value.length))) return `${field.label.replace('*', '').trim()} is required`;
+    if (isRequired && (!value || (Array.isArray(value) && !value.length))) {
+      return `${field.label.replace('*', '').trim()} is required`;
+    }
 
     if (field.validation) {
       const val = field.validation;
-      if (val.type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return 'Invalid email';
-      if (val.minLength && value.length < val.minLength) return `Minimum length ${val.minLength}`;
-      if (val.maxLength && value.length > val.maxLength) return `Maximum length ${val.maxLength}`;
+      if (val.type === 'email' && value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        return 'Invalid email';
+      }
+      if (val.minLength && String(value).length < val.minLength) {
+        return `Minimum length ${val.minLength}`;
+      }
+      if (val.maxLength && String(value).length > val.maxLength) {
+        return `Maximum length ${val.maxLength}`;
+      }
       if (val.min && Number(value) < val.min) return `Minimum value ${val.min}`;
       if (val.max && Number(value) > val.max) return `Maximum value ${val.max}`;
-      if (val.pattern && value && !new RegExp(val.pattern).test(value)) return 'Invalid format';
+      if (val.pattern && value && !new RegExp(val.pattern).test(value)) {
+        return 'Invalid format';
+      }
     }
     return '';
   };
 
   const evaluateCondition = (cond) => {
     if (!cond) return true;
-    return formData[cond.field] === cond.value; // Simple equality, extend for > < etc if needed
+    return formData[cond.field] === cond.value;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
+
     const newErrors = {};
-    fields.forEach(f => {
+    fields.forEach((f) => {
       const err = validateField(f, formData[f.name]);
       if (err) newErrors[f.name] = err;
     });
     setErrors(newErrors);
-    if (Object.keys(newErrors).length) {
+
+    if (Object.keys(newErrors).length > 0) {
       setIsSaving(false);
       return;
     }
 
     try {
-      const payload = preparePayload();
-      // Real: for file, use FormData; await fetch(config.saveApi, { method: 'POST', body: formDataWithFiles })
-      await new Promise(r => setTimeout(r, 1200));
-      setSavedData(payload);
+      const { LMS_BASE_URL } = getConfig();
+      const client = getAuthenticatedHttpClient();
+
+      await client.post(`${LMS_BASE_URL}${config.saveApi}`, prepareFormData());
+
+      // Notify other components that profile data changed → progress should refresh
+      emitProfileEvent(PROFILE_EVENTS.PROGRESS_SHOULD_REFRESH);
+
+      // setSavedData({ ...formData });
       setIsEditing(false);
-    } catch {
-      alert('Save failed');
+    } catch (err) {
+      console.error('Save failed:', err);
     } finally {
       setIsSaving(false);
     }
@@ -337,8 +358,8 @@ const GenericSection = ({ config }) => {
               {(value || []).map(val => (
                 <span key={val} className="badge bg-primary text-white d-flex align-items-center m-1">
                   {val}
-                  <Button variant="black" size="sm" className="p-0 ms-1 text-white m-1" onClick={() => removeMulti(field.name, val)}>
-                    <FontAwesomeIcon icon={faClose} />
+                  <Button variant="white" size="sm" className="p-0 ms-1 text-white m-1" onClick={() => removeMulti(field.name, val)}>
+                    <FontAwesomeIcon icon={faClose} className="text-dark" />
                   </Button>
                 </span>
               ))}
