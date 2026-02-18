@@ -238,6 +238,7 @@ export const visibilitiesSelector = createSelector(
           visibilityLanguageProficiencies: preferences.visibilityLanguageProficiencies || 'all_users',
           visibilityName: preferences.visibilityName || 'all_users',
           visibilitySocialLinks: preferences.visibilitySocialLinks || 'all_users',
+          visibilityGender: preferences.visibilityGender || 'all_users',
         };
       case 'private':
         return {
@@ -248,6 +249,7 @@ export const visibilitiesSelector = createSelector(
           visibilityLanguageProficiencies: 'private',
           visibilityName: 'private',
           visibilitySocialLinks: 'private',
+          visibilityGender: 'private',
         };
       case 'all_users':
       default:
@@ -263,6 +265,7 @@ export const visibilitiesSelector = createSelector(
           visibilityLanguageProficiencies: 'all_users',
           visibilityName: 'all_users',
           visibilitySocialLinks: 'all_users',
+          visibilityGender: 'all_users',
         };
     }
   },
@@ -310,6 +313,11 @@ export const formValuesSelector = createSelector(
     visibilitySocialLinks: chooseFormValue(
       drafts.visibilitySocialLinks,
       visibilities.visibilitySocialLinks,
+    ),
+    gender: chooseFormValue(drafts.gender, account.gender),
+    visibilityGender: chooseFormValue(
+      drafts.visibilityGender,
+      visibilities.visibilityGender,
     ),
   }),
 );
@@ -368,6 +376,10 @@ export const profilePageSelector = createSelector(
     socialLinks: formValues.socialLinks,
     visibilitySocialLinks: formValues.visibilitySocialLinks,
     draftSocialLinksByPlatform,
+
+    // Gender form data
+    gender: formValues.gender,
+    visibilityGender: formValues.visibilityGender,
 
     // Other data we need
     saveState,
