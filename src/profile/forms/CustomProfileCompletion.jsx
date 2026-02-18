@@ -14,30 +14,6 @@ const CustomProfileCompletion = () => {
   const [progressData, setProgressData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // useEffect(() => {
-  //   const { LMS_BASE_URL } = getConfig();
-  //   const fetchSections = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const client = getAuthenticatedHttpClient();
-        
-  //       const response = await client.get(
-  //         `${LMS_BASE_URL}/profile/progress/?role=student`
-  //       );
-
-  //       const data = response.data;
-  //       setProgressData(data);
-
-  //     } catch (err) {
-  //       console.error('Failed to load dynamic profile form configuration:', err);
-  //       setError('Could not load profile sections. Please try again later.');
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchSections();
-  // }, []);
   const fetchProgress = async () => {
     try {
       setLoading(true);
