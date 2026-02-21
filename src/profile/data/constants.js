@@ -10,6 +10,13 @@ const EDUCATION_LEVELS = [
   'other',
 ];
 
+const GENDER_OPTIONS = [
+  'm',
+  'f',
+  'o',
+  'p',
+];
+
 const SOCIAL = {
   linkedin: {
     title: 'LinkedIn',
@@ -30,4 +37,5 @@ export {
   EDUCATION_LEVELS,
   SOCIAL,
   FIELD_LABELS,
+  GENDER_OPTIONS,
 };

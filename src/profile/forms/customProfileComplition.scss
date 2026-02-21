@@ -1,0 +1,27 @@
+.profile-completion-container{
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    margin: 0 0 15px 0;
+    padding: 15px;
+    .container-header{
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 24px;
+        color: #111827;
+        margin: 0;
+        padding: 6px 0;
+    }
+    p {
+        font-size: 14px;
+        line-height: 20px;
+        color: #111827 !important;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        margin: 0;
+    }
+}
+.profile-progress{
+    border-radius: 999px !important;
+    border: none !important;
+    background: #F2F7F8 !important;
+}
